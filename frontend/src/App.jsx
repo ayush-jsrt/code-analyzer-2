@@ -48,7 +48,7 @@ ${text}
       const res = await axios.get("http://54.160.154.46:8080/claude/ask", {
         params: { q: prompt },
       });
-      setAnalysisResult(res.data.result);
+      setAnalysisResult(res.data);
       setLastAnalyzedText(text);
     } catch (err) {
       console.error(err);
