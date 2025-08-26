@@ -1,0 +1,106 @@
+name: Build and Push to Docker Hub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  dockerize-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Bandit Security Scan
+        run: |
+          pip install bandit -r backend/requirements.txt
+          bandit backend/apiserver.py -f html -o bandit-report-backend.html || true
+
+      - name: Upload Bandit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-report-backend
+          path: bandit-report-backend.html
+
+      - name: Run pip-audit for dependency vulnerabilities
+        run: |
+          pip install pip-audit
+          pip-audit -r backend/requirements.txt -f json -o pip-audit-report.json || true
+
+      - name: Upload SCA Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-report-backend
+          path: pip-audit-report.json
+
+      - name: Change to workdir
+        working-directory: ./backend
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/code-analyzer-backend:latest .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/code-analyzer-backend:latest
+
+
+  dockerize-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Run ESLint Security Scan
+        working-directory: ./frontend
+        run: |
+          npx eslint . --ext .js,.jsx || true
+
+      - name: Run npm audit for vulnerabilities
+        working-directory: ./frontend
+        run: npm audit --json > npm-audit-report.json || true
+
+      - name: Upload SAST Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-sast-reports
+          path: |
+            ./frontend/npm-audit-report.json
+
+      - name: Change to workdir
+        working-directory: ./frontend
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/code-analyzer-frontend:latest .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/code-analyzer-frontend:latest
+
+  # k8s-yaml-deploy:
+  #   runs-on: self-hosted
+  #   needs:
+  #     - dockerize-backend
+  #     - dockerize-frontend
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+
+  #     - name: Apply Kubernetes manifests
+  #       run: sudo kubectl apply -f k8s/ -n code-analyzer
+
+  #     - name: Restart Kubernetes api-resources
+  #       run: sudo kubectl rollout restart deployment,statefulset -n code-analyzer
