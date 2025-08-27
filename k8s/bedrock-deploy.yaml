@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bedrock-deploy
+  namespace: code-analyzer
+  labels:
+    app: bedrock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bedrock
+  template:
+    metadata:
+      labels:
+        app: bedrock
+    spec:
+      containers:
+        - name: bedrock
+          image: ayushjsrtia/code-analyzer-bedrock:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: bedrock-volume
+              mountPath: /home/ubuntu/
+      volumes:
+        - name: bedrock-volume
+          emptyDir: {}
