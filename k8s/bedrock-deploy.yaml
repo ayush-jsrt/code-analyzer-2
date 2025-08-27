@@ -21,9 +21,14 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-          volumeMounts:
-            - name: bedrock-volume
-              mountPath: /home/ubuntu/
-      volumes:
-        - name: bedrock-volume
-          emptyDir: {}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: aws-access-key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: aws-secret-key
