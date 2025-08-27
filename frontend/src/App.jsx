@@ -45,7 +45,7 @@ ${text}
   const handleInvokeSonnet = async (text) => {
     try {
       const prompt = buildAnalysisPrompt(text);
-      const res = await axios.get("http://54.164.136.172:8080/claude/ask", {
+      const res = await axios.get("http://54.164.136.172:30080/claude/ask", {
         params: { q: prompt },
       });
       setAnalysisResult(res.data);
