@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_URL = "http://54.145.13.198:32000"; // Change if backend is hosted elsewhere
+const API_URL = "http://54.164.136.172:32000"; // Change if backend is hosted elsewhere
 
 function App() {
   const [notes, setNotes] = useState([]);
@@ -45,7 +45,7 @@ ${text}
   const handleInvokeSonnet = async (text) => {
     try {
       const prompt = buildAnalysisPrompt(text);
-      const res = await axios.get("http://54.145.13.198:8080/claude/ask", {
+      const res = await axios.get("http://54.164.136.172:8080/claude/ask", {
         params: { q: prompt },
       });
       setAnalysisResult(res.data);
