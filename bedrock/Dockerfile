@@ -18,6 +18,9 @@ COPY ayush/src ./src
 # Build the application (skip tests for faster builds, remove -DskipTests if you want tests)
 RUN ./mvnw clean package -DskipTests
 
+
+
+
 # ====== RUNTIME STAGE ======
 FROM eclipse-temurin:17-jre-alpine
 
