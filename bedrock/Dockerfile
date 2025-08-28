@@ -19,7 +19,18 @@ FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
+RUN apk --no-cache del sudo || true && \
+    rm -f /bin/su /usr/bin/sudo || true
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 COPY --from=builder /app/target/*.jar app.jar
+
+RUN chown appuser:appgroup /app/app.jar && \
+    chmod 500 /app/app.jar && \
+    chmod 555 /app
+
+USER appuser
 
 EXPOSE 8080
 
