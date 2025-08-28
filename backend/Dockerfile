@@ -16,7 +16,7 @@ RUN pip install pyinstaller
 RUN pyinstaller --onefile apiserver.py
 
 # ====== FINAL STAGE ======
-FROM alpine:latest
+FROM debian:bullseye-slim
 WORKDIR /app
 
 COPY --from=builder /app/dist/apiserver .
