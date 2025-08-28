@@ -9,4 +9,4 @@ COPY apiserver.py .
 
 EXPOSE 5000
 
-CMD ["python3", "apiserver.py"]
+ENTRYPOINT ["python3", "apiserver.py"]
