@@ -17,10 +17,23 @@ RUN pyinstaller --onefile apiserver.py
 
 # ====== FINAL STAGE ======
 FROM debian:bullseye-slim
+
+RUN apt-get purge -y sudo && \
+    rm -f /bin/su /usr/bin/sudo || true && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -d /app/apiserveruser -s /usr/sbin/nologin apiserveruser
+
 WORKDIR /app
 
 COPY --from=builder /app/dist/apiserver .
 
+RUN chown apiserveruser:apiserveruser /app/apiserver && \
+    chmod 500 /app/apiserver && \
+    chmod 555 /app
+
+USER apiserveruser
+
 EXPOSE 5000
 
-CMD ["./apiserver"]
+ENTRYPOINT ["./apiserver"]
