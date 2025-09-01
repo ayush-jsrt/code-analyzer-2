@@ -9,3 +9,8 @@ kubectl create secret generic aws-credentials \
   --from-literal=aws-secret-key=YOUR_AWS_SECRET_ACCESS_KEY \
   -n code-analyzer
 ```
+
+
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
