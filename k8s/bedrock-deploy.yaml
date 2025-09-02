@@ -24,7 +24,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /claude/health
-              port: 80
+              port: 8080
             initialDelaySeconds: 50
             periodSeconds: 50
             timeoutSeconds: 20
@@ -32,7 +32,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /claude/health
-              port: 80
+              port: 8080
             initialDelaySeconds: 20
             periodSeconds: 40
             timeoutSeconds: 10
