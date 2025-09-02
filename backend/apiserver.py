@@ -48,6 +48,10 @@ def init_db():
     except Error as e:
         print("Error initializing DB:", e)
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return "working", 200
+
 @app.route('/invoke', methods=['POST'])
 def invoke_sonnet():
     try:
