@@ -23,7 +23,7 @@ spec:
             - containerPort: 8080
           livenessProbe:
             httpGet:
-              path: /
+              path: /claude/health
               port: 8080
             initialDelaySeconds: 50
             periodSeconds: 50
@@ -31,7 +31,7 @@ spec:
             failureThreshold: 5
           readinessProbe:
             httpGet:
-              path: /
+              path: /claude/health
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 40

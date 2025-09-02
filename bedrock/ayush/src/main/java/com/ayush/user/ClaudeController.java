@@ -17,4 +17,9 @@ public class ClaudeController {
     public String ask(@RequestParam String q) {
         return claudeService.askClaude(q);
     }
+
+    @GetMapping("/health")
+    public String healthCheck() {
+        return "working";
+    }
 }
