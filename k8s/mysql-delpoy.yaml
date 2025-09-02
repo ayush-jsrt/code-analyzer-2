@@ -29,8 +29,8 @@ spec:
                 - -c
                 - "mysqladmin ping -h 127.0.0.1 -uroot -proot"
             initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
+            periodSeconds: 40
+            timeoutSeconds: 10
             failureThreshold: 5
           readinessProbe:
             exec:
@@ -38,10 +38,10 @@ spec:
                 - sh
                 - -c
                 - "mysqladmin ping -h 127.0.0.1 -uroot -proot"
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
+            initialDelaySeconds: 20
+            periodSeconds: 50
+            timeoutSeconds: 10
+            failureThreshold: 5
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
