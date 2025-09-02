@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-backend-to-mysql
+  name: mysql-allow-backend
   namespace: code-analyzer
 spec:
   podSelector:
@@ -9,8 +9,17 @@ spec:
       app: mysql
   policyTypes:
     - Ingress
+    - Egress
   ingress:
     - from:
+        - podSelector:
+            matchLabels:
+              app: flask-notes
+      ports:
+        - protocol: TCP
+          port: 3306
+  egress:
+    - to:
         - podSelector:
             matchLabels:
               app: flask-notes
